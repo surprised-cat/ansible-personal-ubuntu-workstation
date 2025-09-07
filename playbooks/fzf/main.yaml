@@ -1,0 +1,18 @@
+---
+- hosts: all
+  vars:
+    fzf_version: v0.65.2
+    fzf_sourcecode_dir: ~/.fzf 
+  tasks:
+    - name: Download fzf from git (by tag)
+      ansible.builtin.git:
+        repo: https://github.com/junegunn/fzf.git 
+        dest: '{{ fzf_sourcecode_dir }}'
+        refspec: '{{ fzf_version }}'
+
+    - name: Perform auto-install for fzf
+      ansible.builtin.shell:
+        # this does quite a lot (read install file)
+        # It also adds line to source keybindings to .bashrc
+        cmd: '{{ fzf_sourcecode_dir }}/install'
+
