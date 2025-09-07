@@ -22,4 +22,3 @@
         src: tmux.conf
         dest: ~/.tmux.conf
         mode: '644'
-

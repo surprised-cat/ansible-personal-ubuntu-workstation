@@ -1,3 +1,4 @@
 ---
 
 - import_playbook: playbooks/tmux/main.yaml
+- import_playbook: playbooks/vim/main.yaml

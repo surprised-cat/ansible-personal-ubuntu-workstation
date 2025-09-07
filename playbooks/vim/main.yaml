@@ -1,0 +1,32 @@
+---
+
+- hosts: all
+  vars:
+    vim_version: 2:9.0.0749-0york0~22.04
+  tasks:
+    - name: Uninstall vim-tiny package
+      become: true
+      ansible.builtin.package:
+        name: vim-tiny
+        state: absent
+
+    - name: Add latest vim ppa repo (latest vim is not available in default ubuntu upstream)
+      become: true
+      ansible.builtin.apt_repository:
+        repo: ppa:jonathonf/vim
+        state: present
+
+    - name: Install full vim text editor
+      become: true
+      # using apt module here because generic .package one does not support refetching packages before Install
+      # We  need it cause new origin for vim was added before
+      ansible.builtin.apt:
+        name: vim={{ vim_version }}
+        state: present
+        update_cache: true
+        
+    - name: Uninstall nano package
+      become: true
+      ansible.builtin.package:
+        name: nano
+        state: absent
