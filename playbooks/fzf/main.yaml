@@ -2,7 +2,8 @@
 - hosts: all
   vars:
     fzf_version: v0.65.2
-    fzf_sourcecode_dir: ~/.fzf 
+    fzf_sourcecode_dir: ~/.fzf
+    fzf_extensions_dir: ~/.fzf_ext
   tasks:
     - name: Download fzf from git (by tag)
       ansible.builtin.git:
@@ -10,9 +11,22 @@
         dest: '{{ fzf_sourcecode_dir }}'
         refspec: '{{ fzf_version }}'
 
-    - name: Perform auto-install for fzf
-      ansible.builtin.shell:
-        # this does quite a lot (read install file)
-        # It also adds line to source keybindings to .bashrc
-        cmd: '{{ fzf_sourcecode_dir }}/install'
+    # No tag available. Always checkout from main.
+    - name: Download fzf-git keybindings (in general can be called a plugin)
+      ansible.builtin.git:
+        repo: https://github.com/junegunn/fzf-git.sh.git
+        dest: '{{ fzf_extensions_dir }}/fzf-git'
+        force: true
 
+    - name: Patch fzf-git ext (tmux old version support, remove blue color from text)
+      ansible.builtin.shell:
+        cmd: |
+          sed -i 's/blue/white/g' {{fzf_extensions_dir}}/fzf-git/fzf-git.sh \\
+          sed -i 's/--height 50% --tmux 90%,70%//g' {{fzf_extensions_dir}}/fzf-git/fzf-git.sh \\
+          sed -i 's/\[\[ -n $TMUX \]\] && tmux display-message "Not in a git repository"//g' {{fzf_extensions_dir}}/fzf-git/fzf-git.sh
+
+    - name: Create fzf config 
+      ansible.builtin.template:
+        src: fzf.conf.tpl
+        dest: ~/.bash_init_scripts/fzf.conf
+        mode: '744'
