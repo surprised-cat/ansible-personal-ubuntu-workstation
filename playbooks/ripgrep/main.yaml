@@ -1,0 +1,27 @@
+---
+- hosts: all
+  vars:
+    ripgrep_pkg_local_path: /tmp/ripgrep.deb
+  tasks:
+    - name: Download ripgrep from git releases (by tag)
+      ansible.builtin.uri:
+        url: https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep_14.1.1-1_amd64.deb 
+        follow_redirects: all
+        force: true
+        dest: '{{ ripgrep_pkg_local_path }}'
+    
+    - name: Install ripgrep from local package
+      become: true
+      ansible.builtin.apt:
+        deb: '{{ ripgrep_pkg_local_path }}'
+
+    - name: Remove ripgrep installer
+      ansible.builtin.file:
+        path: '{{ ripgrep_pkg_local_path }}'
+        state: absent
+        
+    - name: Create ripgrep config 
+      ansible.builtin.template:
+        src: ripgrep.conf
+        dest: ~/ripgrep.conf
+        mode: '644'

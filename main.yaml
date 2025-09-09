@@ -9,5 +9,6 @@
         mode: 0755
 
 - import_playbook: playbooks/tmux/main.yaml
+- import_playbook: playbooks/ripgrep/main.yaml
 - import_playbook: playbooks/fzf/main.yaml
 - import_playbook: playbooks/vim/main.yaml

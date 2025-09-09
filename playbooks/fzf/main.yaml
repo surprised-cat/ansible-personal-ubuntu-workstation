@@ -25,6 +25,12 @@
           sed -i 's/--height 50% --tmux 90%,70%//g' {{fzf_extensions_dir}}/fzf-git/fzf-git.sh \\
           sed -i 's/\[\[ -n $TMUX \]\] && tmux display-message "Not in a git repository"//g' {{fzf_extensions_dir}}/fzf-git/fzf-git.sh
 
+    - name: Create fzf ripgrep interactive search script 
+      ansible.builtin.copy:
+        src: fzf_ripgrep_interactive.sh
+        dest: '{{ fzf_extensions_dir }}/fzf_ripgrep_interactive.sh'
+        mode: '744'
+
     - name: Create fzf config 
       ansible.builtin.template:
         src: fzf.conf.tpl
