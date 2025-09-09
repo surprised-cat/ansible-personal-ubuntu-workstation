@@ -24,6 +24,20 @@
         name: vim={{ vim_version }}
         state: present
         update_cache: true
+
+    
+
+    - name: Install LSP Bash
+      ansible.builtin.npm:
+        global: true
+        name: '{{ item.name }}'
+        version: 
+        state: present
+      with_items:
+        - { name: 'bash-language-server', version: '5.6.0'}
+        # - { name: '@ansible/ansible-language-server', version '1.2.3'}
+        - { name: '@ansible/ansible-language-server', version '10.7.0'} # wtf this version (its reported by npm)
+
         
     - name: Uninstall nano package
       become: true
