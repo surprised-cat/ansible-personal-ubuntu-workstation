@@ -1,0 +1,44 @@
+---
+- hosts: all
+  vars:
+    fzf_version: v0.65.2
+  tasks:
+    - name: Download nvim pkg 
+      ansible.builtin.uri:
+        url: https://github.com/neovim/neovim/releases/download/v0.11.4/nvim-linux-x86_64.tar.gz
+        follow_redirects: all
+        force: true
+        dest: /tmp/nvim.tar.gz
+
+    - name: Unarchive nvim 
+      become: true
+      ansible.builtin.unarchive:
+        src: /tmp/nvim.tar.gz
+        dest: /opt
+
+    - name: Create nvim dir structure
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: directory
+        mode: 0755
+      with_items:
+        - ~/.config/nvim/lua/config
+        - ~/.config/nvim/lua/plugins
+
+    - name: Copy local folder to remote 
+      ansible.builtin.copy: 
+        src: ./plugin_specs/ 
+        dest: ~/.config/nvim/lua/plugins/ 
+        mode: 0644
+
+    - name: Create nvim lazy plugin init script
+      ansible.builtin.template:
+        src: lazy.lua
+        dest: ~/.config/nvim/lua/config/lazy.lua
+        mode: '744'
+
+    - name: Create nvim main conf
+      ansible.builtin.template:
+        src: init.lua
+        dest: ~/.config/nvim/init.lua
+        mode: '744'
