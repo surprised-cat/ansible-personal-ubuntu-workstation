@@ -5,6 +5,11 @@
     fzf_sourcecode_dir: ~/.fzf
     fzf_extensions_dir: ~/.fzf_ext
   tasks:
+    - name: Install batcat(bat) util to use as colored previews
+      ansible.builtin.package:
+        name: bat
+        state: latest
+
     - name: Download fzf from git (by tag)
       ansible.builtin.git:
         repo: https://github.com/junegunn/fzf.git 
