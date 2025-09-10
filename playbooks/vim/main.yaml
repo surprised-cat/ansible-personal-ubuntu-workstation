@@ -1,6 +1,7 @@
 ---
 
 - hosts: all
+  gather_facts: true
   vars:
     vim_version: 2:9.0.0749-0york0~22.04
   tasks:
@@ -25,9 +26,12 @@
         state: present
         update_cache: true
 
-    
+    - name: Create lsp dir for vim
+      ansible.builtin.file:
+        path: ~/.vim/lsp 
+        state: directory
 
-    - name: Install LSP Bash
+    - name: Install LSP servers(loaded from git)
       ansible.builtin.npm:
         global: true
         name: '{{ item.name }}'
@@ -37,8 +41,41 @@
         - { name: 'bash-language-server', version: '5.6.0'}
         # - { name: '@ansible/ansible-language-server', version '1.2.3'}
         - { name: '@ansible/ansible-language-server', version '10.7.0'} # wtf this version (its reported by npm)
+      
+    - name: Install LSP Terraform
+      ansible.builtin.uri:
+        url: https://releases.hashicorp.com/terraform-ls/0.37.0/terraform-ls_0.37.0_linux_amd64.zip
+        follow_redirects: all
+        force: true
+        dest: /tmp/terraform-lsp.zip
 
+    - name: Unarchive terraform-lsp 
+      ansible.builtin.unarchive:
+        src: /tmp/terraform-lsp.zip
+        dest: ~/.vim/lsp/
+
+    - name: Remove terraform-lsp installer
+      ansible.builtin.file:
+        path: /tmp/terraform-lsp.zip
+        state: absent
+
+    - name: Symlink terraform-lsp to globals
+      become: true
+      ansible.builtin.file:
+        src:  /home/{{ ansible_user_id }}/.vim/lsp/terraform-ls
+        dest: /usr/bin/terraform-ls
+        state: link
+
+    - name: Save vim child config
+      ansible.builtin.copy:
+        src: ./lsp.vim
+        dest: /home/{{ ansible_user_id }}/.vim/lsp.vim
         
+    - name: Save .vimrc
+      ansible.builtin.template:
+        src: ./.vimrc
+        dest: /home/{{ ansible_user_id }}/.vimrc
+
     - name: Uninstall nano package
       become: true
       ansible.builtin.package:

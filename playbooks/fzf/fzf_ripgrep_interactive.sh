@@ -10,5 +10,5 @@ fzf --ansi --disabled --query "$INITIAL_QUERY" \
     --bind "start:reload:$RG_PREFIX {q}" \
     --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
     --delimiter : \
-    --preview 'cat {1}' 
+    --preview 'batcat --color=always {1} --highlight-line {2}' \
     #--bind 'enter:become(vim {1} +{2})'
