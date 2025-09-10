@@ -54,17 +54,29 @@
         src: /tmp/terraform-lsp.zip
         dest: ~/.vim/lsp/
 
-    - name: Remove terraform-lsp installer
-      ansible.builtin.file:
-        path: /tmp/terraform-lsp.zip
-        state: absent
-
     - name: Symlink terraform-lsp to globals
       become: true
       ansible.builtin.file:
         src:  /home/{{ ansible_user_id }}/.vim/lsp/terraform-ls
         dest: /usr/bin/terraform-ls
         state: link
+
+    - name: Remove terraform-lsp installer
+      ansible.builtin.file:
+        path: /tmp/terraform-lsp.zip
+        state: absent
+
+    - name: Make sure vim syntax definition default folder exists
+      ansible.builtin.file:
+        path: ~/.vim/syntax
+        state: directory
+        mode: 0755
+
+    - name: Download HCL syntax
+      ansible.builtin.uri:
+        url: https://raw.githubusercontent.com/hashivim/vim-terraform/master/syntax/hcl.vim
+        dest: ~/.vim/syntax/hcl.vim
+        mode: 0644
 
     - name: Save vim child config
       ansible.builtin.copy:
