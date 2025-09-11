@@ -1,5 +1,6 @@
 require('config.lazy')
 require('config.lsp')
+require('config.fzf')
 vim.cmd.colorscheme "catppuccin-macchiato"
 vim.g.mapleader = " "
 
