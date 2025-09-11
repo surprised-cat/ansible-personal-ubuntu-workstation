@@ -9,5 +9,6 @@ return {
     "neovim/nvim-lspconfig",
   },
 
-  {'kevinhwang91/nvim-bqf'}
+  {'kevinhwang91/nvim-bqf'},
+  {"ibhagwan/fzf-lua"},
 }
