@@ -17,3 +17,14 @@
       ansible.builtin.file:
         path: /tmp/git_delta.deb
         state: absent
+
+    - name: Add git-delta conf
+      ansible.builtin.copy:
+        src: git_conf
+        dest: ~/
+        mode: 0644
+
+    - name: Download color themes for git-delta
+      ansible.builtin.uri:
+        url: https://raw.githubusercontent.com/dandavison/delta/main/themes.gitconfig
+        dest: ~/git_conf/themes.gitconfig
