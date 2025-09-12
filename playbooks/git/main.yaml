@@ -1,0 +1,19 @@
+---
+- hosts: all
+  tasks:
+    - name: Download git_delta diff highlighter from git releases (by tag)
+      ansible.builtin.uri:
+        url: https://github.com/dandavison/delta/releases/download/0.18.2/git-delta_0.18.2_amd64.deb
+        follow_redirects: all
+        force: true
+        dest: /tmp/git_delta.deb
+    
+    - name: Install git_delta from local package
+      become: true
+      ansible.builtin.apt:
+        deb: /tmp/git_delta.deb
+
+    - name: Remove git_delta installer
+      ansible.builtin.file:
+        path: /tmp/git_delta.deb
+        state: absent

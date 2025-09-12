@@ -3,6 +3,7 @@ require('config.lsp')
 require('config.fzf')
 vim.cmd.colorscheme "catppuccin-macchiato"
 vim.g.mapleader = " "
+local fzf_lua = require("fzf-lua")
 
 -- determine context root for fzf picks/searches (git project root for example)
 local git_dir = vim.fs.find(".git", {
@@ -47,3 +48,6 @@ vim.keymap.set({ "n" }, "<Leader>H",
   end, 
   { silent = true }
 )
+
+vim.keymap.set({ "n" }, "<Leader>b", fzf_lua.buffers, {silent = true})
+vim.keymap.set({ "n" }, "<Leader>gs", fzf_lua.git_status, {silent = true})
