@@ -1,1 +1,0 @@
-By default ubuntu has vim-tiny installed instead  of full feature vim
